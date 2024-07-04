@@ -1,0 +1,175 @@
+
+\paragraph*{preliminars}
+
+\begin{definition}{Increment function}\\    
+    Given a set of literals $L$  then a group function $inc: L \mapsto \mathbb{N}$ is a function that
+    maps a literal $l$ to its increment. 
+\end{definition}
+
+\begin{definition}{Group function}\\
+    Given a set of literals $L$ and a set of groups $G$ then a group function $group: L \mapsto G$ is a function that
+    maps a literal $l$ to its group. 
+\end{definition}
+
+\begin{definition}{$max\_lit$ function}\\
+    Given a group set $G$ and a set of literals $L$ of literals then $max\_lit: \mathcal{P}(L) \times G \mapsto L$ is a function 
+    from a pair $(S,g) \in \mathcal{P}(L) \times G \mapsto l \in S$ such that $l$ is the literal
+    ,belonging to $g$, with the maximum increment, that is  $max\_lit(S,g) = \arg\max_{k \in S \cap g} inc(k)$.
+\end{definition}
+
+\begin{definition}{Active literals}\\
+    Given a set $S$ of literals the set $A_S = \{ l \in L | l = max\_lit(S,g) \land g = group(l) \}$
+    is the set of active literals of $S$. If a literal $l \not\in S$ then it is a \textit{non-active} literal.
+\end{definition}
+
+\begin{definition}{Below literal (blw) function}\\
+    Given a literal $l \in L$ then $blw: L \times \mathcal{P}(L)$ is a function that given a literal $l \in L$
+    return all the literal \textit{below} it, that is: $blw(l) = \{ k \in group(l) | inc(k) \le inc(l) \}$. 
+\end{definition}
+
+\begin{definition}{Sum function}\\
+    Given a set of literals $L$ then $sum(L) = \sum_{l \in A_L} {inc(l)}$.
+\end{definition}
+
+\begin{definition}{Extension}\\
+    A extension of a set $S$ with a literal $l$, written as $S' = S \ext l$,
+    is equal to $S' = S \cup blw(l)$.
+\end{definition}
+
+\begin{definition}{Valid extension}\\
+    A extension of a set $S$ with a literal $l$ is \textit{valid} iff
+    $S \cap g =  \emptyset$, where $g= group(l)$
+\end{definition}
+
+
+\begin{lemma}
+    Given a set of literals $L$, a literal $\ell \in L$ and a set $S_{\bar{\ell}} \subseteq  L$
+    and $S_{\ell} \subseteq S$ and a sum $s$.
+    Let $S_{\bar{\ell}}$ is the maximum cardinality subset giving $s$ as sum with $\ell$ being an \textit{non-active} literal
+    and $S_{\ell}$ is the maximum cardinality subset with $\ell$ being an \textit{active literal} giving $s$  as sum.\\
+    Let $ S = \arg\max_{X \in \{S_{\ell}, S_{\bar{\ell}}\}} |X| $. \\ 
+    Then $S \subseteq L$ is the maximum cardinality subset that gives as sum $s$ with considering
+    $L$ literals.
+    \label{lemma1}
+\end{lemma}
+
+\begin{proof}
+    Let's assume by contradiction that $S$ is not the maximum cardinality subset that gives as sum $s$.
+    So there exists a set $S' \subseteq L$ such that $|S'| > |S|$.
+    If $\ell \not\in A_{S'}$ then $|S'| > |S_{\bar{\ell}}|$, that is $S_{\bar{\ell}}$ 
+    is not the maximum cardinality set 
+    with $\ell$ being a \textit{non-active literal} giving as sum $s$, but this is a contradiction.
+    So $\ell \in A_{S'}$ then $|S'| > |S_{\ell}|$, that is $S_{\ell}$ is not the maximum cardinality set 
+    with $\ell$ being a \textit{active literal} giving as sum $s$, but this is a contradiction.
+    So $\ell \in A_{S'} \cap \overline{A_{S'}}$ and this is a contradiction.
+\end{proof}
+
+\begin{definition}{Maximum Subset Sum with Groups (MSG)}\\
+    $MSG_L = \{ (S,s,n) \in \mathcal{P}(L) \times \mathbb{N} \times \mathbb{N} \,|\, sum(S) \le s \land |S| \ge n\}$
+\end{definition}
+
+\begin{definition}{Decision problem}\\
+    The Maximum Subset Sum with Groups (MSG) it the following decision problem:
+    Given a set $S \subseteq L$ of literals and  $s,c \in \mathbb{N}$ decide
+    if $(S,s,c) \in MSG_L$.
+
+\end{definition}
+
+
+\begin{theorem}
+    The algorithm is sound, that is $ALG_L \subseteq MSG_L$.
+\end{theorem}
+
+\begin{proof}
+    Let $L$ be a set of literals and $s,c \in \mathbb{N}$ and $n = |L|$.\\
+    Let $G$ is the sets of groups of the literals inside $L$.\\
+    Let $L_g = \{ l \in L \mid group(l) = g \}$ and $L_g$ is ordered w.r.t. the $inc$ function,
+    that is $L_g = \{ l_{g,1}, l_{g,2}, \ldots, l_{g,n_g} \} \quad \text{such that} 
+    \quad inc(l_{g,1}) \leq inc(l_{g,2}) \leq \cdots \leq inc(l_{g,n_g}).$\\
+    Let $L_o = \bigcup_{g \in G} L_g$.\\
+    Let $L_{o_j}$ being the first $j$ literals of $L_o$.
+    The algorithm constructs a matrix $M$ of size $s \times n + 1$ where 
+    $Dom(M_{i,j}) = \mathcal{P}(L) \cup \{\Box\} $ where $'\Box'$ means that there are no subsets $S \subseteq L_{o_{j}}$
+    such that $sum(S) \le s$ and $|S| \ge c$ and $|\Box| = -1$.\\
+    The setup of this matrix is done in this way:
+    \begin{itemize}
+        \item $M_{0,0} = \{\}$ 
+        \item $M_{0,j} = \{ l | l \in L_{o_{j}} \land inc(l) = 0\} \quad \forall j \in \{1, \hdots , n\}$ 
+        \item $M_{i,0} = \Box \quad \forall i \in \{1, \hdots , s\}$
+    \end{itemize}
+    After the setup is completed: $\forall i \in \{1, \hdots , s\}, j \in \{1, \hdots , n\}$
+    \begin{itemize}
+        \item if $inc(l_j) \le i$ then $M_{i,j} = \arg \max \{|M_{i,j-1}|, |M_{(i-inc(l_j)),k} \ext l_j|\}$
+            where $k = \max \{d \, | d \in \{0, \hdots, j-1\} \land M_{(i-inc(l_j)),d} \ne \Box 
+            \, \land \, \nexists u \in group(l) \cap M_{(i-inc(l_j)),d} \}$.
+            It is easy to see that $|M_{(i-inc(l_j)),k} \ext l_j|$ is a valid extension.
+        \item if $inc(l_j) > i$ then $M_{i,j} =  M_{i,j-1}$.
+    \end{itemize}
+    Now a claim has to be reach
+    \begin{itemize}
+        \item \textit{claim: $\forall i \in \{0, \hdots, s\}, j  \in \{ 0, \hdots, n \} \quad M_{i,j}$ is the cardinality-maximal
+        subset of $L_{o_j}$ with $sum(M_{i,j}) \le i$}.
+        From now on, to refer to the fact that $M_{i,j}$ is the cardinality-maximal
+        subset of $L_{o_j}$ with $sum(M_{i,j}) = i$ we will say that $M_{i,j}$ is \textit{correct}.
+        \item \textit{proof}:  \\
+            This proof is done by induction.
+            \begin{itemize}
+                \item Base case: $M_{0,j}$ is correct for $0 \le j \le n$ and $M_{i,0}$ is correct for $ 1 \le i \le s$
+                \item Induction hypothesis: given a sum $0 \le i \le s$ and a $0 \le j \le n - 1$ all the cells $M_{i',j'}$ 
+                are correct, with $0 \le i' \le i$ and $0 \le j' \le j$
+            \end{itemize}
+            This proof will explain how, given a $0 \le i \le s$ and $0 \le j \le n - 1$, to construct the cell
+            $M_{i,j+1}$ proving that it is also correct.
+            Let $0 \le i \le s$ and $1 \le j \le n$.
+            $M_{i,j-1}$ by I.H. it is correct, so it is the cardinality-maximum subset such that sum is $s$
+            considering the first $L_{o_{j}}$ literals and $l_j \in L_o$ is not present 
+            into $M_{i,j-1}$ so it is not active, that is $l_j \not\in A_{M_{i,j-1}}$.
+            $M_{(i-inc(l_j)),k}$ since $k = \max \{d \, | d \in \{0, \hdots, j-1\} \land M_{(i-inc(l_j)),d} \ne \Box 
+            \, \land \, \nexists u \in group(l) \cap M_{(i-inc(l_j)),d} \}$ and since  by I.H. $M_{(i-inc(l_j)),k}$
+            is correct  it means that it the cardinality-maximal 
+            subset such that $sum(M_{(i-inc(l_j)),k}) = i$ considering the first $L_{o_{k}}$ 
+            literals and $l_j \in L_o$ is not present into $M_{i,k}$.
+            The valid extension $S = M_{(i-inc(l_j)),k} \ext l_j$ is the cardinality-maximal subset such 
+            that sum is less the $s$
+            considering the first $L_{o_{j}}$ literals and $l_j \in L_o$ is active, that is
+            $l_j \in A_{M_{(i-inc(l_j)),k}}$.
+            If $inc(l_j) > i$ then $M_{i,j} =  M_{i,j-1}$, since $inc(l_j)$ is greater 
+            than $i$ it means that cannot be an active literal, otherwise the sum would be greater then $s$.
+            Hence every subset considering $j$ literals do not have $l_j$, in this case since $M_{i,j-1}$ is correct then  
+            is the cardinality-maximum subset of those subsets, so given that $M_{i,j} =  M_{i,j-1}$ then 
+            $M_{i,j}$ is correct.
+            On the other hand if $inc(l_j) \le i$ then $M_{i,j} = \arg \max \{|M_{i,j-1}|, |M_{(i-inc(l_j)),k} \ext l_j|\}$
+            where $k = \max \{d \, | d \in \{0, \hdots, j-1\} \land M_{(i-inc(l_j)),d} \ne \Box 
+            \, \land \, \nexists u \in group(l) \cap M_{(i-inc(l_j)),d} \}$.
+            $M_{(i-inc(l_j)),k}$ is correct so $sum(M_{(i-inc(l_j)),k}) = i-inc(l_j)$, extending this set with $l_j$
+            will generate $S = M_{(i-inc(l_j)),k} \ext l_j$.
+            Since by construction $\nexists u \in group(l) \cap M_{(i-inc(l_j)),k}$ it means that 
+            the extension is a valid one, so $l_j \in A_S$.
+            Thus $sum(S) = sum(M_{(i-inc(l_j)),k}) + inc(l_j) = i-inc(l_j) + inc(l_j) = i$.
+            $S$ is the cardinality-maximum subset of $L_{o_j}$ where $l_j$ is active.
+            To see it, let's assume the contrary, that is: there is a subset $S'$ of $L_{o_j}$
+            such that $|S'| > |S| $, $sum(S') = i - inc(l_j)$ and $l_j \in A_{S'}$. In this case since $l_j \in A_S \cap A_{S'}$ 
+            then $|S' \setminus blw(l_j)| > |S \setminus blw(l_j)|$.
+            Given that $S = M_{(i-inc(l_j)),k} \ext l_j = M_{(i-inc(l_j)),k} \cup blw(l_j)$ then
+            $S \setminus blw(l_j) = (M_{(i-inc(l_j)),k} \cup blw(l_j)) \setminus blw(l_j) = M_{(i-inc(l_j)),k}$.
+            Let $S'' = S' \setminus blw(l_j)$
+            Since $S'$ cardinality-maximum subset of $L_{o_j}$ where 
+            $sum(S') = i - inc(l_j)$ and $l_j \in A_{S'}$ then $sum(S' \setminus blw(l_j))= sum(S') - inc(i) = i - inc(i).$
+            So, $S' \setminus blw(l_j)$ is the cardinality-maximum subset of $L_{o_k}$ where 
+            $k = \max\{d \, | \, d \in {0, \hdots, |L_o|} and L_{o_d} \cap group(l_j) = \emptyset\}$.
+            But is this case $M_{(i-inc(l_j)),k}$ would not be correct, but this is a contradiction.
+            So, $M_{i,j-1}$ is the maximum cardinality subset giving $s$ as sum with $\ell$ being an \textit{non-active} literal
+            and $M_{(i-inc(l_j)),k} \ext l_j$ is the maximum cardinality subset 
+            with $\ell$ being an \textit{active literal} giving $s$  as sum.
+            By lemma $\ref{lemma1}$ it implies that $M_{i_j} = max(M_{i,j-1}, M_{(i-inc(l_j)),k} \ext l_j)$ 
+            is the cardinality-maximal subset of $L_{o_j}$ with $sum(M_{i,j}) = i$
+            so it is correct.
+            $\Box$
+    \end{itemize}
+
+    So every cell is correct, then taking the cardinality-maximum subset in the last column will give the 
+    cardinality-maximum subset with a sum less of equal to s, let $S$ be such subset.
+    Let a tuple $(S,s,v) \in ALG_L$ then $|S| \ge v$ and $sum(S) \le s$.
+    Since $S$ is the cardinality-maximum subset with $sum(S) \le s$ and $|S| \ge v$ then $(S,s,v) \in MSG$.
+    Thus $ALG_L \subseteq MSG$.  
+\end{proof}

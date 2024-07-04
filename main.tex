@@ -1,0 +1,108 @@
+\documentclass[a4paper,12pt,oneside]{book}
+\linespread{1.5}
+\usepackage{geometry}
+\geometry{top=3cm,bottom=3cm,left=3.5cm,right=3.5cm} % Impostiamo il valore dei margini.
+\usepackage[utf8]{inputenc}
+\usepackage{tikz,pgf}
+\usepackage{indentfirst}
+\usepackage{amsfonts}
+\usepackage[english]{babel}
+\usepackage{todonotes}
+\usepackage{subfig}
+\usepackage{fancyhdr}
+\setlength{\parindent}{1cm}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{csquotes}
+\usepackage{amsmath}
+\usepackage{numprint}
+\usepackage{pgfplots}
+\usepackage{pgfplotstable}
+\usepackage{tocbibind}
+\usepackage{tabto}
+\usepackage{listings}
+\usepackage{url}
+\def\UrlFont{\rmfamily}
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{multirow}
+\usepackage[ruled,linesnumbered,vlined]{algorithm2e}
+\usepackage{booktabs}
+\usepackage{url}
+\usepackage{todonotes}
+\usepackage{comment}
+\usepackage{amsthm}
+\usepackage{hyperref}
+
+\newtheorem{definition}{Definition}
+\renewcommand\lstlistingname{Source Code}
+\renewcommand\lstlistlistingname{Source Code}
+\newtheorem{example}{Example}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}{Lemma}
+\newtheorem{corollary}{Corollary}
+% \newtheorem{proof}{Proof}
+\newcommand{\derives}{\ensuremath{\mbox{\,\,$:$--}\,\,}\xspace}
+\newcommand{\ext}{\xrightarrow{\text{ext}}}
+\usepackage{xcolor}
+\definecolor{code0}{RGB}{205,50,207}
+\definecolor{code1}{RGB}{207,169,50}
+\definecolor{code2}{RGB}{50,207,90}
+\definecolor{backcolour}{rgb}{0.95,0.94,0.89}
+
+\graphicspath{{imgs/}} %% cartella dalla quale ricavare le immagini %%
+
+
+\setlength {\marginparwidth }{2cm} 
+\pgfplotsset{compat=1.16}
+
+\newenvironment{dedication}
+  {\clearpage           % we want a new page
+   \thispagestyle{empty}% no header and footer
+   \vspace*{\stretch{1}}% some space at the top 
+   \itshape             % the text is in italics
+   \raggedleft          % flush to the right margin
+  }
+   {\par % end the paragraph
+   \vspace{\stretch{3}} % space at bottom is three times that at the top
+   \clearpage           % finish off the page
+  }
+  
+\begin{document}
+%% Frontespizio %%
+\begin{titlepage}
+\begin{center}
+\textbf{\LARGE TU Wien}\\
+\textbf{Department of Logic $\And$ Computation}\\
+\vskip 6pt
+\hrule
+\vskip 8pt
+\includegraphics[width=0.3\textwidth,height=50pt]{logo.jpg}
+\vskip 8pt
+\textbf{Master Degree in Artificial Intelligence and Computer Science}
+\vskip 32pt
+
+\textbf{Thesis}\\
+\textbf{2023-02-07}
+
+\vskip 70pt
+{ \huge \bfseries Proof of my AMOSUM :) }\\[0.4cm]
+\vskip 150pt
+
+\vskip 70pt
+\hrule
+\vskip 6pt
+academic year 2023/2024
+\vfill
+\end{center}
+\end{titlepage}
+
+\tableofcontents
+
+\newpage
+\small
+\input{parts/proof.tex}
+
+\end{document}
